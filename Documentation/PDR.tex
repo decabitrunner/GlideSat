@@ -1,15 +1,17 @@
-\documentclass[11pt]{article}
+\documentclass{article}
 \usepackage{graphicx}
 \usepackage[english]{babel}
 \usepackage[utf8]{inputenc}
 \usepackage{xunicode}
 \usepackage{amsmath}
 \usepackage{float}
+\usepackage{color}
 \usepackage{tabularx}
 \usepackage{booktabs}
 \usepackage{csvsimple}
+\usepackage[hidelinks]{hyperref}
 \usepackage[letterpaper,top=2cm,bottom=2cm,left=3cm,right=3cm,marginparwidth=1.75cm]{geometry}
-\linespread{1.5}
+%\linespread{1.5}
 
 \title{\textbf{PDR: }GlideSat}
 \author{Matej Hloška, Daria Zaremba, Jungwoo Hong, Mu-Hsuan Yu, Peter Blažej, Lenny Ziman}
@@ -18,42 +20,77 @@
 \begin{document}
 
 \maketitle
+\tableofcontents
 
+\newpage
 \section{Team Introduction}
-\input{TeamIntroduction}
+
 
 
 \section{Flowchart/Timetable}
-\input{FlowchartTimetable}
 
-\newpage
+
 \section{Mission Overview}
-\input{MissionOverview}
+\subsection{Primary Mission}
+Measuring the air temperature and pressure will be carried out by a temperature and barometer sensor integrated into a custom made PCB as it is the most compact solution. This telemetry will then be sent via an RF link to the ground station, where it will be processed and displayed in graphs of altitude against time and temperature against altitude. 
+\subsection{Secondary Mission}
+\subsubsection{Achieving controlled and sustained flight}
+The GlideSat will deploy a parafoil made out of rip-stop nylon. This parafoil will have guide strings attached to various connection points and they will be joined to form one left and one right guide string. These will then be winded using reels, a worm gear and a stepper motor to control the flight of the GlideSat. Data about the current trajectory will be collecting using a GPS module, Barometer and accelerometer. These will be used in the algorithm that will control the flight of the GlideSat. Because doing this fully autonomously is difficult as there are many failure points, it will be possible to take over the manual control of the GlideSat at the ground station. The pilot will then be guided by the camera feed from the onboard camera as well as the map overview showing the GlideSat's position. The GlideSat will land using a helix trajectory.
+\subsubsection{Detecting cars over a large area using AI}
+Using a camera which will be onboard the GlideSat, we will take pictures of the ground below the GlideSat as it is in controlled flight. These pictures will be saved in an onboard SD card and streamed to the ground station for redundancy. They will then be processed using a previously trained AI object recognition model to identify cars. The amount of cars will then be analysed and matched using the GPS coordinate at which each frame was taken to the corresponding position and car hotspots will be shown via heat map.
 
 \section{Possible Risks and Complications}
-\input{PossibleRisksAndComplications}
 
-\newpage
+
+
 \section{Mechanical Design}
-\input{MechanicalDesign}
 
-\newpage
+
+
 \section{Electronic Design}
-\input{ElectronicDesign}
 
-\newpage
+
 \section{Software}
-\input{Software}
+The software the GlideSat will require can be split into three parts: On board, Ground station, AI car recognition.
+\subsection{On board software}
 
-\newpage
+\subsection{Ground station software}
+
+\subsection{AI car recognition software}
+The computer vision will be carried out using the YOLO(you only look once) algorithm. This will be programmed in python using the ]\textit{Ultralytics} library. For training the model, UAV imagery, which we source from the \textit{M30T} dataset (\href{https://figshare.com/s/01fa8d1163f4e9a5a13a?file=52023875}{\textcolor{blue}{which you can access here}}), this data set contains both RGB and IR frames along with annotations - if the accuracy of the model once trained on the RGB set is not high enough we might add IR to the model, however this remains to be determined later. The \href{https://www.kaggle.com/datasets/mdzahidhasanriad/skysealand}{\textit{\textcolor{blue}{Sky Sea Land Object Detection Dataset}}} containing satellite imagery including cars may also be used to supplement training as the UAV \textit{M3OT} dataset contains imagery from heights in the range of $100-120\,\text{m}$ which is slightly lower than when we start image data collection with the GlideSat.\\
+The 
+
 \section{Recovery System}
-\input{RecoverySystem}
+As mentioned in section 5, the GlideSat will be equipped with a parafoil (a type of parachute which allows nearly horizontal motion). After the GlideSat is released at 1000 meters, an actuator will release built up elastic tension in rubber bands and accelerate the parafoil out causing it to eject. Details on this ejection mechanism have already been addressed in section 5.\\
+GlideSat Descent and Parafoil Sizing\\
+Ensuring that the GlideSat complies with the official competition rules during descent is critical. According to the GlideSat regulations, the system must descend with a terminal velocity between 5 m/s and 12 m/s. To remain safely within this range, a target descent velocity of 8–11 m/s was selected.\\
+The terminal velocity is determined by the balance between the gravitational force acting on the GlideSat and the aerodynamic drag produced by the parafoil. The drag force is given by:
+\[F_d = \frac{1}{2}\rho C_dAv²\]
+At terminal velocity, the drag force equals the weight of the GlideSat:
+\[F_d=mg\]
+The GlideSat mass is constrained by the rules to lie between 300 g and 350 g. For this analysis, a mass of 325 g was assumed, resulting in a weight of approximately 3.19 N.\\
+Assuming an air density of 1.2 kg/m³, a descent velocity of 9.5 m/s, and a typical parafoil drag coefficient of 1.5, the required parafoil cross-sectional area can be calculated:
+\[3.19 = \frac{1}{2} \cdot1.2\cdot1.5\cdot{A} \cdot9.5²\]
+Solving for A gives:
+\[A\approx0.04\,\text{m}^2\approx400\,\text{cm}^2\]
+This area ensures that the GlideSat descends within the permitted velocity range while providing sufficient aerodynamic control for guided descent using the parafoil steering system.
 
-\newpage
+
 \section{Ground Station}
-\input{GroundStation}
+
 
 \section{Promotion}
-\input{Promotion}
+\begin{enumerate}
+    \item \textbf{Secondary School Assembly Presentation: }We are planning to present the GlideSat project to the students in the assembly of the secondary school. We will be explaining the GlideSat project and the mission objectives. This will be beneficial in spreading awareness among the students and generating more interest in STEM and space projects among the older students.
+    \item \textbf{Presentations to Primary School Students:} We are planning to present our project to primary students who study space in their curriculum. In this presentation, we will be explaining the basic idea of satellites and explaining our project in detail to the students.
+    \item \textbf{Physics Lesson Presentation: }We will be presenting our project in the Physics lesson and explaining how it relates to what we have learned in class so far.
+    \item  \textbf{Local media outreach: }We intend to contact the local newspaper in Dúbravka, Bratislava, and inform them of our participation in the GlideSat competition and the importance of student participation in STEM education within the local community.
+    \item \textbf{School newsletter article: }We intend to write an article and submit it to the school newsletter. This will be sent out to students, teachers, and parents within the local community and will keep everyone informed of our project and progress.
+    \item \textbf{Posters around the school: }We intend to design posters to be displayed within the local community and specifically within the school. This will include a permanent display in the Science corridor.
+    \item \textbf{Nord Anglia Education community: }We intend to contact the Nord Anglia Education community and arrange to have an article published in their newsletter. This will be sent out to students and educators across the globe and will allow us to share our experience with this community.
+    \item \textbf{School social media: }We intend to update everyone within the local community of our progress and project through the official social media platforms (Instagram, Facebook, and LinkedIn).
+    \item \textbf{Dedicated social media blog (subject to approval): }We intend to set up a blog specifically for the project.
+\end{enumerate}
+
 
 \end{document}
