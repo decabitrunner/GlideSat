@@ -1,0 +1,4 @@
+train: small_scale/train/images
+val: small_scale/val/images
+nc: 1
+names: ["vehicle"]
