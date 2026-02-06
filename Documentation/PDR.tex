@@ -24,15 +24,28 @@
 
 \newpage
 \section{Team Introduction}
-
-
+\begin{center}
+    \includegraphics[width=0.8\textwidth]{team.png}
+\end{center}
 
 \section{Flowchart/Timetable}
-
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.5\linewidth]{pub.png}
+    \caption{External Pipeline format}
+    \label{fig:pub}
+\end{figure}
+We have a \href{https://naeeuro-my.sharepoint.com/:x:/g/personal/peter_blazej_bisb_sk/IQD0z8g1x6VMSaiGpM0n8hL6Ad7AuQIiF5kv9VSpN1e-6Ns?e=EkRsne}{\textcolor{blue}{pipeline}} in Gantt planner form on excel, feel free to access via blue link. Genera structure shown in figure \ref{fig:pub}. We also have an internal excel which is used for organizing microtasks, that is in the format shown in figure \ref{fig:priv}.
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.5\linewidth]{priv.png}
+    \caption{Microtasks management}
+    \label{fig:priv}
+\end{figure}
 
 \section{Mission Overview}
 \subsection{Primary Mission}
-Measuring the air temperature and pressure will be carried out by a temperature and barometer sensor integrated into a custom made PCB as it is the most compact solution. This telemetry will then be sent via an RF link to the ground station, where it will be processed and displayed in graphs of altitude against time and temperature against altitude. 
+Measuring the air temperature and pressure will be carried out by a temperature and barometer sensor integrated into a custom made PCB as it is the most compact solution. This telemetry will then be sent via an RF link to the ground station, where it will be processed and displayed in graphs of altitude against time and temperature against altitude.
 \subsection{Secondary Mission}
 \subsubsection{Achieving controlled and sustained flight}
 The GlideSat will deploy a parafoil made out of rip-stop nylon. This parafoil will have guide strings attached to various connection points and they will be joined to form one left and one right guide string. These will then be winded using reels, a worm gear and a stepper motor to control the flight of the GlideSat. Data about the current trajectory will be collecting using a GPS module, Barometer and accelerometer. These will be used in the algorithm that will control the flight of the GlideSat. Because doing this fully autonomously is difficult as there are many failure points, it will be possible to take over the manual control of the GlideSat at the ground station. The pilot will then be guided by the camera feed from the onboard camera as well as the map overview showing the GlideSat's position. The GlideSat will land using a helix trajectory.
@@ -40,44 +53,198 @@ The GlideSat will deploy a parafoil made out of rip-stop nylon. This parafoil wi
 Using a camera which will be onboard the GlideSat, we will take pictures of the ground below the GlideSat as it is in controlled flight. These pictures will be saved in an onboard SD card and streamed to the ground station for redundancy. They will then be processed using a previously trained AI object recognition model to identify cars. The amount of cars will then be analysed and matched using the GPS coordinate at which each frame was taken to the corresponding position and car hotspots will be shown via heat map.
 
 \section{Possible Risks and Complications}
-
-
-
+\begin{center}
+    \def\arraystretch{1.5}%
+    \begin{tabularx}{0.8\textwidth} {
+        | >{\raggedright\arraybackslash}X
+        | >{\centering\arraybackslash}X
+        |>{\raggedleft\arraybackslash}X | }
+        \hline
+        \textbf{Risk/Complication} & \textbf{How we reduce/avoid it} \\
+        \hline
+        \p
+        Structural failure of GlideSat body  & Use a conservative structure, reinforce high-stress areas, run drop/handling tests, and keep spares of critical printed parts.\\
+        Electronics damage on landing  & Add 3D-printed impact-absorbing TPU layers, secure components properly, and test landing survivability early.\\
+        Parafoil fails to deploy & Use a clean, repeatable packing method, keep the bay free of sharp edges, add a deployment checklist, and perform many ground ejection tests.\\
+        Partial/unstable inflation & Test multiple pack styles, ensure lines are arranged consistently, and confirm reliable inflation in repeated trials.\\
+        Line tangling & Use disciplined line management, keep lines under control during packing, use clear line routing paths, and perform hang tests before flights.\\
+        Steering mechanism jam & Protect moving parts from dust/debris, keep the mechanism simple, test under load repeatedly, and include a pre-flight functional check.\\
+        Motor/servo failure & Choose a proven actuator, avoid overloading it, test stall conditions, and carry spare parts for rapid replacement.\\
+        GlideSat spins or swings during descent & Ensure stable mass distribution by placing the PCB, battery, and camera low and securely, and keeping the control-line exits arranged consistently.\\
+        Rainy weather & Use ripstop nylon for the parafoil because it is lightweight and water-resistant.\\
+        \hline
+    \end{tabularx}
+\end{center}
 \section{Mechanical Design}
+\subsection{Parafoil}
+Check figure \ref{fig:parafoil} (attached below) for used notation.
+The GlideSat will be equipped with a parafoil which is a self-inflating flexible
+wing that converts descent speed into stable aerodynamic drag and modest
+lift allowing precise control of terminal velocity and attitude. In our design, we
+have to consider several factor, which influence the stability and glide
+efficiency of the descent.
 
+Typical target parameters are the mass, descent speed, aspect ration (AR),
+number of cells in the parafoil and of course, the canopy area. We will use a
+rectangular platform (top view).
+Wingspan = b and chord = c (both are shown in figure 1.1). Area (A) = b * c
+and the aspect ratio $\displaystyle AR = \frac{b^2}{A} = \frac{b}{c}$ as $A = bc$
+In our case, we calculated the canopy (main parafoil body) area to be 400
+$\text{cm}^2$ in the return system section (section 8). This area will enable the GlideSat
+to reach the desired terminal velocity its given mass (check section 8 for
+further details)
 
+A low AR (1.5-3) provides a stable, high drag descent. A high AR $(>5)$ provides
+efficient glide but a less stable descent. We will use an AR equal to 3 as a stable
+descent is prioritized for safety.
+
+Number of cells: more cells give smoother shape therefore better gliding
+efficiency, fewer cells lead to more drag, but easier deployment. A typical
+practical number of cells would be 5-9 as it provides a balance.
+Cell width $\displaystyle W = \frac{b}{N}$
+
+The airfoil will have a flat bottom and a cambered top (8-12.{\%} camber).
+To achieve a cambered top, the top layer will be = bottom skin * 1.05-1.10.The thickness in between the bottom and top layer will be 12-15\% of the
+chord length.
+
+We will laser cut and combine pieces of ripstop nylon as it is a light
+weight non-elastic material (with a density of $20-40 g/m^2$) to construct the
+airfoil canopy.
+The lines connecting to the airfoil will be made out of dyneema/spectra lines.
+The glider will be attached by two lines near the bottom. Going up, the lines
+branch out and connect to the glider at varied length to form the shape of the
+parafoil (length decreases near the edges to create a slight parabolic shape).
+
+The air inlets will be located at leading edge and will be 10-20\% of cell height.
+Too large would create a collapse risk while too small would result in poor
+inflation.
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.35\linewidth]{parafoil.jpeg}
+    \caption{parafoil diagram}
+    \label{fig:parafoil}
+\end{figure}
+\subsection{Parafoil ejection system}
+We have already designed, printed and successfully tested our parafoil ejection system concept (see figure \ref{fig:ejection}). The system consists of loaded rubber bands which connect to a fake end. In between the end and the exit of the GlideSat, we will have placed the actual parafoil. A single solenoid will be used to release the elastic energy stored in the rubber bands. The next step is to test it with the actual parafoil and in the air.
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.35\linewidth]{test.png}
+    \caption{parafoil ejection test}
+    \label{fig:ejection}
+\end{figure}
+\subsection{Parafoil steering system}
+The steering system is one of the most important parts of our GlideSat as a failure could result in poor control. For this reason we have considered many designs which can reliably control the motion and heading of the parafoil. In
+this document we will discuss the two most practical methods; a reeling and
+pole tilt design.
+\subsubsection{Reeling design}
+The parafoil steering system uses a single motor driving a horizontally mounted reel through worm gears(lowers power spikes of motor reduces battery drainage) to control both suspension lines simultaneously. Two steering lines connect the GlideSat to the parafoil. Each line is wound onto the same reel but in opposite directions. As a result, when the motor rotates
+the reel one line is wound in, increasing tension on one side of the parafoil and the other line is unwound, reducing tension on the opposite side. This creates a differential pull between the two sides of the parafoil. Pulling
+one side while releasing the other causes the parafoil to turn in the direction
+of the tightened line, enabling controlled steering using only a single motor. This design simplifies the mechanical system, reduces mass and power
+consumption, and ensures synchronized line control.
+\subsubsection{Alternate Steering Design: Pole-Tilt Mechanism}
+After deployment, two short pole segments would assemble and lock
+together to form a single horizontal pole. The two steering lines of the
+parafoil would be attached to the ends of this pole. A servo motor positioned at the center of the pole would rotate the pole by
+a small angle. When the pole tilts, one end moves downward while the other
+moves upward. This motion pulls one steering line while simultaneously
+releasing the other, creating a differential input that causes the parafoil to
+turn.
+
+We chose the reeling design as there are less moving mechanical parts and so lower risk of failure, it is also the most compact design out of the two.
 
 \section{Electronic Design}
+\subsection{General Design}
+The electronic system of Glidesat is divided into 4 boards. 1 mainboard and 4 sub-boards.
+\begin{enumerate}
+    \item Mainboard - system control, sensor reading, radio communication, logics
+    \item Motor Control Board - actuator control
+    \item Camera Board – high resolution image taking and onboard data storage
+    \item GPS Module – commercial GPS module
+\end{enumerate}
+This architecture allows us to separate the control system (mainboard), high speed camera operation, high voltage motor control, and high precision GPS. This separation reduces electrical interference between sub-systems and improves communication reliability. Communication between systems will use following standard interfaces: UART, I2C, SPI, PWM/GPIO.
+\subsubsection{Design Evolution and Component selections}
+In the beginning of the project, few MCUs were evaluated. Including the Atmel ATmega series (Arduino equivalent), STM32, ESP32, and RP2040. Atmel chips were rejected since they could not carry out multiple peripherals at the same time reliably, due to the lack of sufficient processing power and memory. STM32 and ESP32 chips were also considered but were found to consume more power, introduce unnecessary complexity, and exceed the performance requirements of our Glidesat application. The RP2040 SoC was selected as it offers dual-core processing power, multiple communication interfaces, low power consumption compared to higher end MCU such as STM32 or ESP32, and great community support and documentation. Although RP2040 is only available as QFN packages, which introduces soldering difficulties, the performance to power ratio advantages justifies the selection.
+\subsubsection{Board design}
+\textbf{Complementary components: }Flash memory – W25Q128JVS, Crystal oscillator - X322512MSB4SI, Voltage regulator – AP2112K-3.3
+\begin{center}
+    \def\arraystretch{1.5}%
+    \begin{tabularx}{0.8\textwidth} {
+        | >{\raggedright\arraybackslash}X
+        | >{\centering\arraybackslash}X
+        |>{\raggedleft\arraybackslash}X | }
+        \hline
+        \textbf{Sensor} & \textbf{Unit} \\
+        \hline
+        \p
+        Barometric pressure  & BMP280 \\
+        Temperature  & BMP280 \\
+        IMU (Initial Measurement Unit) & MPU-6050\\
+        Battery voltage monitor & GPIO\_ADC\\
+        \hline
+    \end{tabularx}
+\end{center}
+To minimise thermal distortion of environmental readings, sensors are placed in separate places with heat generating components, and ventilation opening will be placed near the sensors.
 
+A LoRa transceiver is used for communication. It is connected via SPI and it is used to transmit telemetry data to the ground station. Including: Altitude, temperature, GPS coords, system status, image capture status. For GPC, the Neo-6M GPS module is used.
+
+For camera module, we chose to integrate Raspberry Pi Compute Module 4(CM4) and Arducam 477P high-quality camera module for image capturing. In the beginning of the project, the camera system was planned to be controlled directly by RP2040 via SPI. However, this approach has been rejected since we needed a high resolution(10mp+) camera. The problem was limited RAM of RP2040 (and MCU in general), insufficient bandwidth of SPI for such high-resolution (No high res camera have SPI interface), and lack of native support if MIPI CSI interface. To capture the high-resolution images, a Linux embedded computer was required. The Raspberry Pi Compute module 4 was therefore selected. The CM4 offers native MIPI CSI interface support, sufficient RAM, stable Linux camera drivers, and data storage via micro-SD card. CM4 will control the camera and trigger it by communicating with the mainboard via UART. There are two possible ways being considered to operate CM4. Operate continuously throughout the mission or turn on when needed using MOSFET. The first option can reduce power cycling and reliable but consume more power. However, the second option consumes less power, but it takes 20-40 seconds of time to boot the Linux system and it is not highly reliable. This will be evaluated and decided in the future.
+
+The motor board will drive signals for paraglider motors, regulate power for actuators, and have a buzzer as part of the recovery system. The buzzer is added to the motor control board because it requires higher voltage which is already present in the board. Having a separated motor control board allows us to have high current paths separated from the mainboard and prevent electrical noises that might be present with high current paths from affecting sensors or LoRa modules, and it simplifies the PCB Design.
+\subsubsection{Prototype Mainboard Development (Mainboard Rev.1)}
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.5\linewidth]{Prototype Mainboard Development (Mainboard Rev.1).png}
+    \caption{Prototype Mainboard}
+    \label{fig:mainboard}
+\end{figure}
+The first prototype of the mainboard was designed using Kicad, and we are currently waiting for the production.The objectives of Mainboard Rev.1 were to evaluate the general functionality of a designed PCB. Specifically, the RP2040 MCU in multi sensor configuration, verify SPI, I2C, and UART communication interfaces, test power regulation, test radio, etc. We spotted some flaws on PCB after submitting production via JLC PCB, but it should be okay since it is the first prototype.
+\subsubsection{Prototype Mainboard Development (Mainboard Rev.2)}
+After finishing Rev.1, we started to work on Rev.2 based on the mistakes we made in Rev.1. We planned pinout of the GPIO pins so we can keep pins organized and planned the board configuration. When we were working on Rev.1, we did not have clear board structure, so we only have a 01x08 JST connector in Rev.1
+\subsection{Power Supply}
+The Glidesat is powered by a rechargeable lithium polymer battery system. Two options were evaluated. Single cell with nominal voltage 3.7V and double cell with 7.4V. Double cell systems offer higher voltage and reduced current for equal power consumption.  However, it increases system complexity because of multiple voltage rails, has risk of overvoltage, more weight, and additional safety requirements for charging. Therefore, after evaluation, a single cell LiPo battery is chosen for Glidesat. Single cells are better since most electronics operate at 3.3V(RP2040, sensors, etc.), using a boost converter is simple and efficient, simplified charging, and reduced weight. Estimated power consumption: \textit{CM4 – 2W}, \textit{Mainboard – 1W},\textit{Motor board and buzzer – 2W} so total $5V$. For mission of 1h
+$5W\cdot1\text{h}=5\text{Wh}$(safety margin of $2-5\text{Wh}$)- therefore, a capacity between 2000mAh and 3000mAh battery is used. DC-DC boost converter generates higher voltage for CM4, actuators, and buzzer. A buck regulator generates 3.3V for RP2040. Battery voltage is monitored by the mainboard ADC.
 
 \section{Software}
-The software the GlideSat will require can be split into three parts: On board, Ground station, AI car recognition.
+The software the GlideSat will require can be split into three parts: On board, Ground station, AI car recognition. Ground station software is covered in the \hyperref[sec:gs]{Ground Station} section.
 \subsection{On board software}
+Most of this software is straight forward sending of telimetry data through radio. The frames from the camera will be compressed on the microcomputer on board and then streamed to the ground station.
 
-\subsection{Ground station software}
+The semi-pilot will work by the GlideSat first computing its current heading, then it will receive a desired heading. It will then calculate the difference in heading. That will then be converted to  angle at which the stepper motor controlling the air foil will need to turn to compensate for that difference. This principle can then be used to follow predetermined paths, because at every point the GlideSat will check its deviation to the heading of the planned path at that time and will correct for that. There is a limit to how fast we can change heading as we don't want to stall lose control of the GlideSat. Experimentation with this is required as an accelerometer might not be reliable enough for the heading. Perhaps we will need a gyroscope or a magnetometer - that's why we added extra pins to the PCB.
 
 \subsection{AI car recognition software}
-The computer vision will be carried out using the YOLO(you only look once) algorithm. This will be programmed in python using the ]\textit{Ultralytics} library. For training the model, UAV imagery, which we source from the \textit{M30T} dataset (\href{https://figshare.com/s/01fa8d1163f4e9a5a13a?file=52023875}{\textcolor{blue}{which you can access here}}), this data set contains both RGB and IR frames along with annotations - if the accuracy of the model once trained on the RGB set is not high enough we might add IR to the model, however this remains to be determined later. The \href{https://www.kaggle.com/datasets/mdzahidhasanriad/skysealand}{\textit{\textcolor{blue}{Sky Sea Land Object Detection Dataset}}} containing satellite imagery including cars may also be used to supplement training as the UAV \textit{M3OT} dataset contains imagery from heights in the range of $100-120\,\text{m}$ which is slightly lower than when we start image data collection with the GlideSat.\\
-The 
+The computer vision will be carried out using the YOLO(you only look once) algorithm. This will be programmed in python using the \textit{Ultralytics} library using \textit{yolov8s} as it is best suited for images (better at probability distribution of region). For training the model, UAV imagery, which we source from the \textit{M30T} dataset (\href{https://figshare.com/articles/dataset/M3OT_A_Multi-Drone_Multi-Modality_dataset_for_Multi-Object_Tracking/28308887/1?file=52023875}{\textcolor{blue}{which you can access here}}), this data set contains both RGB and IR frames along with annotations - if the accuracy of the model once trained on the RGB set is not high enough we might add IR to the model, however this remains to be determined later. We've already trained a model on one part of the \textit{M3OT} data set as a proof of concept (see figure \ref{fig:mdl}), but it is quite flawed due same location training data which resulted in the convolutional network over fitting for brighter cars.
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.5\linewidth]{tests.png}
+    \caption{Preview of the output of trained model}
+    \label{fig:mdl}
+\end{figure}
+The \href{https://www.kaggle.com/datasets/mdzahidhasanriad/skysealand}{\textit{\textcolor{blue}{Sky Sea Land Object Detection Dataset}}} containing satellite imagery including cars may also be used to supplement training as the UAV \textit{M3OT} dataset contains imagery from heights in the range of $100-120\,\text{m}$ which is slightly lower than when we start image data collection with the GlideSat.
+
+For every frame collected, we will also have corresponding accelerometer(its fine because at collection altitude the GlideSat will not be in free fall) and GPS data. This along with the cameras initial position relative to the GlideSat will be used to calculate the rough coordinates of every car at a given frame. To interpret this data, we will look at the map region over which the GlideSat collected data. Then the program will iterate over each frame per $n^2\text{ pixels}^2$ counting unique car additions to each base square from the previous frames. Then an overall heatmap will be created to show the probability density of cars. For example if car with $id=0$ will be in base square $0$ in frame $1$ it will be counted but if it is still there in frame 2 it wont be. If it leaves in frame $3$ and comes back in frame $4$ it still wont be counted, however it will be counted in the base square it went to.
 
 \section{Recovery System}
 As mentioned in section 5, the GlideSat will be equipped with a parafoil (a type of parachute which allows nearly horizontal motion). After the GlideSat is released at 1000 meters, an actuator will release built up elastic tension in rubber bands and accelerate the parafoil out causing it to eject. Details on this ejection mechanism have already been addressed in section 5.\\
 GlideSat Descent and Parafoil Sizing\\
 Ensuring that the GlideSat complies with the official competition rules during descent is critical. According to the GlideSat regulations, the system must descend with a terminal velocity between 5 m/s and 12 m/s. To remain safely within this range, a target descent velocity of 8–11 m/s was selected.\\
 The terminal velocity is determined by the balance between the gravitational force acting on the GlideSat and the aerodynamic drag produced by the parafoil. The drag force is given by:
-\[F_d = \frac{1}{2}\rho C_dAv²\]
+\[F_D = \frac{1}{2}\rho C_dAv^2\]
 At terminal velocity, the drag force equals the weight of the GlideSat:
-\[F_d=mg\]
+\[F_W=mg\]
 The GlideSat mass is constrained by the rules to lie between 300 g and 350 g. For this analysis, a mass of 325 g was assumed, resulting in a weight of approximately 3.19 N.\\
 Assuming an air density of 1.2 kg/m³, a descent velocity of 9.5 m/s, and a typical parafoil drag coefficient of 1.5, the required parafoil cross-sectional area can be calculated:
-\[3.19 = \frac{1}{2} \cdot1.2\cdot1.5\cdot{A} \cdot9.5²\]
+\[3.19 = \frac{1}{2} \cdot1.2\cdot1.5\cdot{A} \cdot9.5^2\]
 Solving for A gives:
 \[A\approx0.04\,\text{m}^2\approx400\,\text{cm}^2\]
 This area ensures that the GlideSat descends within the permitted velocity range while providing sufficient aerodynamic control for guided descent using the parafoil steering system.
 
 
 \section{Ground Station}
+\label{sec:gs}
+We are planning to operate on $868\text{Hz}$, primarily as it is a free range frequency. The GlideSat will need to \textbf{transmit} altitude, temperature, GPS coordinates, accelerometer data, Battery status, System Status, low-resolution camera stream. It will \textbf{receive} motor overrides and recovery system activation commands from the ground station. We need antennas on both ends. What kind of antennas will be determined primarily by the link budget and free space path loss. We also need something that is easy to move around during the recovery phase of the GlideSat. A unidirectional Yagi antenna seems to be a compromise due to all the factors listed previously, we are also considering a parabolic antenna. We still need to conduct some calculations (using Friis equation) and testing to make sure which one is the best. This antenna will then be connect to a laptop which will run the Ground station software.
 
+The ground station software will basically be an interface showing the GlideSat's current geographical position, acceleration, velocity and heading. It will also show the camera stream which will help the operator take control of the GlideSat using the controls integrated in the software if something were to go wrong. This will be coded in C++ as it is fast and can manage the external antenna well.
 
 \section{Promotion}
 \begin{enumerate}
